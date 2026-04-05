@@ -1,4 +1,4 @@
-# Chapter - Material 3 Expressive Audiobook Player
+# 📖 Chapter - Material 3 Expressive Audiobook Player
 
 Chapter is a modern, elegant audiobook player for Android, built with Jetpack Compose and Material 3 Expressive. It focuses on a clean user experience, dynamic theming based on book artwork, and robust multi-file support.
 
