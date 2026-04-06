@@ -7,7 +7,10 @@ import android.util.Log
 import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
+import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import com.example.chapter.data.local.entities.Book
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -15,6 +18,9 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
+import androidx.media3.session.SessionError
+import androidx.media3.session.DefaultMediaNotificationProvider
+import com.example.chapter.R
 import com.example.chapter.MainActivity
 import com.example.chapter.data.local.AppDatabase
 import com.example.chapter.data.repository.BookRepository
@@ -22,6 +28,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.firstOrNull
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PlaybackService : MediaSessionService() {
 
     private var mediaSession: MediaSession? = null
@@ -52,12 +59,63 @@ class PlaybackService : MediaSessionService() {
             .setSkipSilenceEnabled(true)
             .build()
 
+        val notificationProvider = DefaultMediaNotificationProvider(this)
+        notificationProvider.setSmallIcon(R.drawable.chapter_foreground)
+        setMediaNotificationProvider(notificationProvider)
+
         val intent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             this, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        mediaSession = MediaSession.Builder(this, exoPlayer)
+        val forwardingPlayer = object : ForwardingPlayer(exoPlayer) {
+            override fun getDuration(): Long {
+                val totalDuration = chapters.sumOf { it.duration }
+                return if (totalDuration > 0) totalDuration else super.getDuration()
+            }
+
+            override fun getCurrentPosition(): Long {
+                if (chapters.isEmpty() || chapters.none { it.filePath != null }) {
+                    return super.getCurrentPosition()
+                }
+                
+                var globalPosition = 0L
+                val currentIndex = exoPlayer.currentMediaItemIndex
+                for (i in 0 until currentIndex) {
+                    if (i < chapters.size) {
+                        globalPosition += chapters[i].duration
+                    }
+                }
+                globalPosition += exoPlayer.currentPosition
+                return globalPosition
+            }
+            
+            override fun seekTo(mediaItemIndex: Int, positionMs: Long) {
+                // When the system seeks (e.g., from the lockscreen slider)
+                // it might try to seek within the "virtual" single file.
+                if (chapters.any { it.filePath != null }) {
+                    var remaining = positionMs
+                    var targetIndex = 0
+                    for (i in chapters.indices) {
+                        if (remaining < chapters[i].duration) {
+                            targetIndex = i
+                            break
+                        }
+                        remaining -= chapters[i].duration
+                        targetIndex = i
+                    }
+                    super.seekTo(targetIndex, remaining)
+                } else {
+                    super.seekTo(mediaItemIndex, positionMs)
+                }
+            }
+            
+            override fun seekTo(positionMs: Long) {
+                seekTo(exoPlayer.currentMediaItemIndex, positionMs)
+            }
+        }
+
+        mediaSession = MediaSession.Builder(this, forwardingPlayer)
             .setSessionActivity(pendingIntent)
             .setCallback(object : MediaSession.Callback {
                 override fun onConnect(
@@ -86,7 +144,7 @@ class PlaybackService : MediaSessionService() {
                         )
                     }
                     return com.google.common.util.concurrent.Futures.immediateFuture(
-                        SessionResult(SessionResult.RESULT_ERROR_NOT_SUPPORTED)
+                        SessionResult(SessionError.ERROR_NOT_SUPPORTED)
                     )
                 }
 
@@ -108,15 +166,18 @@ class PlaybackService : MediaSessionService() {
                             
                             if (dbChapters.any { it.filePath != null }) {
                                 // Multi-file book: create a playlist
+                                val book = repository.getBookById(bookId)
                                 val playlist = dbChapters.map { chapter ->
+                                    val metadata = MediaMetadata.Builder()
+                                        .setTitle(book?.title ?: "Unknown")
+                                        .setArtist(book?.author)
+                                        .setArtworkUri(book?.coverArtPath?.let { Uri.parse(it) })
+                                        .build()
+                                        
                                     MediaItem.Builder()
                                         .setMediaId(bookId.toString())
                                         .setUri(Uri.parse(chapter.filePath))
-                                        .setMediaMetadata(
-                                            androidx.media3.common.MediaMetadata.Builder()
-                                                .setTitle(chapter.title)
-                                                .build()
-                                        )
+                                        .setMediaMetadata(metadata)
                                         .build()
                                 }
                                 
@@ -137,7 +198,17 @@ class PlaybackService : MediaSessionService() {
                                 
                                 MediaSession.MediaItemsWithStartPosition(playlist, targetIndex, targetPosition)
                             } else {
-                                MediaSession.MediaItemsWithStartPosition(mediaItems, startIndex, startPositionMs)
+                                val book = repository.getBookById(bookId)
+                                val metadata = MediaMetadata.Builder()
+                                    .setTitle(book?.title ?: "Unknown")
+                                    .setArtist(book?.author ?: "Unknown Author")
+                                    .setArtworkUri(book?.coverArtPath?.let { Uri.parse(it) })
+                                    .build()
+                                    
+                                val updatedItems = mediaItems.map { 
+                                    it.buildUpon().setMediaMetadata(metadata).build()
+                                }
+                                MediaSession.MediaItemsWithStartPosition(updatedItems, startIndex, startPositionMs)
                             }
                         }
                         return deferred.asListenableFuture()

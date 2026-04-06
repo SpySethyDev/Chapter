@@ -28,7 +28,7 @@ class BookRepository(
     suspend fun deleteBookmark(bookmark: Bookmark) = bookmarkDao.deleteBookmark(bookmark)
 
     suspend fun insertBookWithChapters(book: Book, chapters: List<Chapter>): Long {
-        val existingBook = bookDao.getBookByPath(book.filePath)
+        val existingBook = bookDao.getBookByPath(book.filePath) ?: bookDao.getBookByTitle(book.title)
         val bookId = if (existingBook != null) {
             val updatedBook = book.copy(
                 id = existingBook.id,

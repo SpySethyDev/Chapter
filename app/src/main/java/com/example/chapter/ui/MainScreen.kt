@@ -1,6 +1,10 @@
 package com.example.chapter.ui
 
 import androidx.compose.animation.*
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.LibraryBooks
@@ -69,42 +73,60 @@ fun MainScreen() {
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             bottomBar = {
                 if (currentDestination?.route != "settings") {
-                    Column {
-                        // Floating Mini Player
-                        AnimatedVisibility(
-                            visible = playerUiState.book != null && !isPlayerScreen,
-                            enter = slideInVertically { it } + fadeIn(),
-                            exit = slideOutVertically { it } + fadeOut()
-                        ) {
-                            MiniPlayer(
-                                viewModel = playerViewModel,
-                                onExpand = {
-                                    playerUiState.book?.let {
-                                        navController.navigate("player/${it.id}")
-                                    }
-                                },
-                                sharedTransitionScope = this@SharedTransitionLayout,
-                                animatedVisibilityScope = this@AnimatedVisibility
-                            )
-                        }
-
-                        if (!isPlayerScreen) {
-                            NavigationBar {
-                                items.forEach { screen ->
-                                    NavigationBarItem(
-                                        icon = { Icon(screen.icon, contentDescription = null) },
-                                        label = { Text(screen.label) },
-                                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                                        onClick = {
-                                            navController.navigate(screen.route) {
-                                                popUpTo(navController.graph.findStartDestination().id) {
-                                                    saveState = true
-                                                }
-                                                launchSingleTop = true
-                                                restoreState = true
-                                            }
-                                        }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                                        MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                                        MaterialTheme.colorScheme.surface
                                     )
+                                )
+                            )
+                    ) {
+                        Column {
+                            // Floating Mini Player
+                            AnimatedVisibility(
+                                visible = playerUiState.book != null && !isPlayerScreen,
+                                enter = slideInVertically { it } + fadeIn(),
+                                exit = slideOutVertically { it } + fadeOut()
+                            ) {
+                                MiniPlayer(
+                                    viewModel = playerViewModel,
+                                    onExpand = {
+                                        playerUiState.book?.let {
+                                            navController.navigate("player/${it.id}")
+                                        }
+                                    },
+                                    sharedTransitionScope = this@SharedTransitionLayout,
+                                    animatedVisibilityScope = this@AnimatedVisibility
+                                )
+                            }
+
+                            if (!isPlayerScreen) {
+                                NavigationBar(
+                                    containerColor = Color.Transparent,
+                                    tonalElevation = 0.dp
+                                ) {
+                                    items.forEach { screen ->
+                                        NavigationBarItem(
+                                            icon = { Icon(screen.icon, contentDescription = null) },
+                                            label = { Text(screen.label) },
+                                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                                            onClick = {
+                                                navController.navigate(screen.route) {
+                                                    popUpTo(navController.graph.findStartDestination().id) {
+                                                        saveState = true
+                                                    }
+                                                    launchSingleTop = true
+                                                    restoreState = true
+                                                }
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -115,9 +137,7 @@ fun MainScreen() {
             NavHost(
                 navController = navController,
                 startDestination = Screen.Home.route,
-                modifier = Modifier.padding(
-                    bottom = if (!isPlayerScreen && currentDestination?.route != "settings") innerPadding.calculateBottomPadding() else 0.dp
-                )
+                modifier = Modifier.fillMaxSize()
             ) {
                 composable(Screen.Home.route) {
                     HomeScreen(

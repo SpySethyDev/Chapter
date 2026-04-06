@@ -24,6 +24,9 @@ interface BookDao {
     @Query("SELECT * FROM books WHERE filePath = :filePath")
     suspend fun getBookByPath(filePath: String): Book?
 
+    @Query("SELECT * FROM books WHERE title = :title")
+    suspend fun getBookByTitle(title: String): Book?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBooks(books: List<Book>): List<Long>
 
