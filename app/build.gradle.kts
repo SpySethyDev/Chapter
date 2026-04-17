@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.chapter"
+    namespace = "com.ssethhyy.chapter"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.chapter"
+        applicationId = "com.ssethhyy.chapter"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

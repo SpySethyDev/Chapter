@@ -1,5 +1,5 @@
 <div style="text-align: center;">
-  <img src="app/src/main/res/drawable/chapter-foreground-white-artboard.svg" width="128" height="128" alt="Chapter Icon"/>
+  <img src="assets/chapter-foreground-white-artboard.svg" width="128" height="128" alt="Chapter Icon"/>
 </div>
 
 # 📖 Chapter - Material 3 Expressive Audiobook Player
@@ -20,28 +20,28 @@ Chapter is a modern, elegant audiobook player for Android, built with Jetpack Co
 
 ## 📸 Screenshots
 ### 🏠 Home Screen
-![Screenshot of the Home Screen](screenshots/mockup-1.png)
+![Screenshot of the Home Screen](assets/mockup-1.png)
 
 ### 🎶 Now Playing Pill - See what you're listening to in a modern Now Playing pill
-![Screenshot of the Now Playing Pill on the Home Screen](screenshots/mockup-2.png)
+![Screenshot of the Now Playing Pill on the Home Screen](assets/mockup-2.png)
 
 ### 📘 Continue Reading - Continue where you left off
-![Screenshot of the Continue Reading Section on the Home Screen](screenshots/mockup-3.png)
+![Screenshot of the Continue Reading Section on the Home Screen](assets/mockup-3.png)
 
 ### 📚 Library Screen - View all of your books in one place
-![Screenshot of the Library Screen](screenshots/mockup-4.png)
+![Screenshot of the Library Screen](assets/mockup-4.png)
 
 ### 🎵 Now Playing Screen - See what you're listening to in a full-screen layout
-![Screenshot of the Now Playing Screen](screenshots/mockup-5.png)
+![Screenshot of the Now Playing Screen](assets/mockup-5.png)
 
 ### 🔖 Chapters - Find and skip to specific chapters in your book (only some books supported)
-![Screenshot of the Chapters Section on the Now Playing Screen](screenshots/mockup-6.png)
+![Screenshot of the Chapters Section on the Now Playing Screen](assets/mockup-6.png)
 
 ### ⚙️ Settings - Customize your experience with various options
-![Screenshot of the Settings Screen](screenshots/mockup-7.png)
+![Screenshot of the Settings Screen](assets/mockup-7.png)
 
 ### 🖌️ Material You vs Adaptive Colors - Choose for the app to adapt to your device's color scheme or adapt to the currently playing Audiobook
-![Screenshot of the Material You vs Adaptive Colors Section on the Now Playing Screen](screenshots/mockup-8.png)
+![Screenshot of the Material You vs Adaptive Colors Section on the Now Playing Screen](assets/mockup-8.png)
 
 ## 🛠️ Built With
 
