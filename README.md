@@ -1,8 +1,11 @@
+<div style="text-align: center;">
+  <img src="/app/src/main/res/drawable/chapter_foreground.xml" alt="Chapter Icon"/>
+</div>
 # 📖 Chapter - Material 3 Expressive Audiobook Player
 
 Chapter is a modern, elegant audiobook player for Android, built with Jetpack Compose and Material 3 Expressive. It focuses on a clean user experience, dynamic theming based on book artwork, and robust multi-file support.
 
-## 📖 Features
+## 🎨 Features
 
 - **Dynamic Theming**: The player's palette automatically adapts to the current book's artwork, creating an immersive listening experience.
 - **Multi-File Support**: Seamlessly plays audiobooks split across multiple files, treating them as a single cohesive unit with unified progress and chapter tracking.
@@ -13,6 +16,31 @@ Chapter is a modern, elegant audiobook player for Android, built with Jetpack Co
 - **Library Management**: Automatic scanning of local storage to find and organize your audiobooks.
 - **Shared Transitions**: Beautiful, fluid animations when navigating between the library and the player.
 - **Customizable Typography**: Tailored reading/listening experience with adjustable text styles.
+
+## 📸 Screenshots
+### 🏠 Home Screen
+![Screenshot of the Home Screen](/screenshots/mockup-1.png)
+
+### 🎶 Now Playing Pill - See what you're listening to in a modern Now Playing pill
+![Screenshot of the Now Playing Pill on the Home Screen](/screenshots/mockup-2.png)
+
+### 📘 Continue Reading - Continue where you left off
+![Screenshot of the Continue Reading Section on the Home Screen](/screenshots/mockup-3.png)
+
+### 📚 Library Screen - View all of your books in one place
+![Screenshot of the Library Screen](/screenshots/mockup-4.png)
+
+### 🎵 Now Playing Screen - See what you're listening to in a full-screen layout
+![Screenshot of the Now Playing Screen](/screenshots/mockup-5.png)
+
+### 🔖 Chapters - Find and skip to specific chapters in your book (only some books supported)
+![Screenshot of the Chapters Section on the Now Playing Screen](/screenshots/mockup-6.png)
+
+### ⚙️ Settings - Customize your experience with various options
+![Screenshot of the Settings Screen](/screenshots/mockup-7.png)
+
+### 🖌️ Material You vs Adaptive Colors - Choose for the app to adapt to your device's color scheme or adapt to the currently playing Audiobook
+![Screenshot of the Material You vs Adaptive Colors Section on the Now Playing Screen](/screenshots/mockup-8.png)
 
 ## 🛠️ Built With
 
@@ -29,6 +57,11 @@ Chapter is a modern, elegant audiobook player for Android, built with Jetpack Co
 1. Clone the repository.
 2. Open the project in Android Studio (Ladybug or newer recommended).
 3. Sync Gradle and run the app on an emulator or physical device.
+
+##  ✏️️ Contributing
+Contribute to the project by forking the repository and creating a new branch with your own changes. If you would like to submit this, please create a pull request to the **Chapter** repository with a detailed description of your changes.
+
+Help is much appreciated! ❤️
 
 ## 📄 License
 
